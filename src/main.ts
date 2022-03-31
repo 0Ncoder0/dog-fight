@@ -143,7 +143,7 @@ class Controller {
     setTimeout(() => {
       bullet.ignoreCollision = false;
       bullet.gravity = 0;
-    }, 1000);
+    }, 300);
     this.world.addItem(bullet);
   }
 
@@ -172,7 +172,7 @@ class GameWorld {
   static createBullet(options: Pick<Item, "center" | "direction" | "speed">) {
     const { center, direction, speed: defaultSpeed } = options;
     const radius = 5;
-    const speed = 1;
+    const speed = 3;
     const dx = direction.x;
     const dy = direction.y;
 
@@ -191,8 +191,12 @@ class GameWorld {
       radius: radius,
       direction: { ...direction },
       speed: {
-        x: dx * (1 + speedFactor) + defaultSpeed.x,
-        y: dy * (1 + speedFactor) + defaultSpeed.y,
+        x:
+          dx * (1 + speedFactor) +
+          (dx * defaultSpeed.x > 0 ? defaultSpeed.x : 0),
+        y:
+          dy * (1 + speedFactor) +
+          (dx * defaultSpeed.y > 0 ? defaultSpeed.y : 0),
       },
       gravity: 0,
     });
@@ -348,6 +352,7 @@ const shipA = GameWorld.createShip({
   center: { x: 300, y: 300 },
   direction: { x: 0, y: 1 },
 });
+shipA.color = "green";
 
 const shipB = GameWorld.createShip({
   center: { x: window.innerWidth - 300, y: 300 },
